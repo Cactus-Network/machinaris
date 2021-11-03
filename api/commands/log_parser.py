@@ -22,7 +22,7 @@ from api.models import log
 from api import app
 
 # Rough number of challenges arriving per minute on a blockchain
-CHALLENGES_PER_MINUTE = 8 
+CHALLENGES_PER_MINUTE = 8
 
 # Most recent partial proofs, actually double as 2 log lines per partial
 PARTIALS_TO_LOAD = 50
@@ -133,6 +133,8 @@ def get_log_lines(log_type, log_id=None, blockchain=None):
         class_escape = re.compile(r' flax.plotting.(\w+)(\s+): ')
     elif blockchain == "flora":
         class_escape = re.compile(r' flora.plotting.(\w+)(\s+): ')
+    elif blockchain == "cactus":
+        class_escape = re.compile(r' cactus.plotting.(\w+)(\s+): ')
     elif blockchain == "hddcoin":
         class_escape = re.compile(r' hddcoin.plotting.(\w+)(\s+): ')
     else: # Chia and NChain both

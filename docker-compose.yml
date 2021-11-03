@@ -1,0 +1,156 @@
+version: '3.7' 
+services: 
+    machinaris: 
+        image: ghcr.io/guydavis/machinaris:latest 
+        container_name: machinaris 
+        hostname: Main-Farm 
+        restart: always 
+        volumes: 
+            - ~/.machinaris:/root/.chia 
+            - "/media/sgroiwes/71:/plots1" 
+            - "/media/sgroiwes/81:/plots2" 
+        environment: 
+            - TZ=America/Edmonton 
+            - mode=fullnode 
+            - worker_address=192.168.1.167 
+            - plots_dir=/plots1:/plots2 
+            - blockchains=chia 
+        ports: 
+            - 8926:8926 
+            - 8927:8927 
+            - 8444:8444 
+            - 8447:8447 
+ 
+    machinaris-cactus: 
+        image: ghcr.io/guydavis/machinaris-cactus:latest 
+        container_name: machinaris-hddcoin 
+        hostname: Main-Farm 
+        restart: always 
+        volumes: 
+            - ~/.machinaris-main:/root/.chia 
+            - "/media/sgroiwes/71:/plots1" 
+            - "/media/sgroiwes/81:/plots2" 
+        environment: 
+            - TZ=America/Edmonton 
+            - mode=fullnode 
+            - controller_host=192.168.1.167 
+            - worker_address=192.168.1.167 
+            - worker_api_port=8940 
+            - plots_dir=/plots1:/plots2 
+            - blockchains=cactus 
+        ports: 
+            - 8940:8940 
+            - 11444:11444 
+            - 11447:11447 
+            
+    machinaris-chives: 
+        image: ghcr.io/guydavis/machinaris-chives:latest 
+        container_name: machinaris-chives 
+        hostname: Main-Farm 
+        restart: always 
+        volumes: 
+            - ~/.machinaris-chives:/root/.chia 
+            - "/media/sgroiwes/71/chives:/plots1" 
+            - "/media/sgroiwes/81/chives:/plots2" 
+        environment: 
+            - TZ=America/Edmonton 
+            - mode=fullnode 
+            - controller_host=192.168.1.167 
+            - worker_address=192.168.1.167 
+            - worker_api_port=8931 
+            - plots_dir=/plots1:/plots2 
+            - blockchains=chives 
+        ports: 
+            - 8931:8931 
+            - 9699:9699 
+            - 9647:9647 
+ 
+    machinaris-flax: 
+        image: ghcr.io/guydavis/machinaris-flax:latest 
+        container_name: machinaris-flax 
+        hostname: Main-Farm 
+        restart: always 
+        volumes: 
+            - ~/.machinaris-flax:/root/.chia 
+            - "/media/sgroiwes/71:/plots1" 
+            - "/media/sgroiwes/81:/plots2" 
+        environment: 
+            - TZ=America/Edmonton 
+            - mode=fullnode 
+            - controller_host=192.168.1.167 
+            - worker_address=192.168.1.167 
+            - worker_api_port=8928 
+            - plots_dir=/plots1:/plots2 
+            - blockchains=flax 
+        ports: 
+            - 8928:8928 
+            - 6888:6888 
+            - 6885:6885 
+ 
+    machinaris-flora: 
+        image: ghcr.io/guydavis/machinaris-flora:latest 
+        container_name: machinaris-flora 
+        hostname: Main-Farm 
+        restart: always 
+        volumes: 
+            - ~/.machinaris-flora:/root/.chia 
+            - "/media/sgroiwes/71:/plots1" 
+            - "/media/sgroiwes/81:/plots2" 
+        environment: 
+            - TZ=America/Edmonton 
+            - mode=fullnode 
+            - controller_host=192.168.1.167 
+            - worker_address=192.168.1.167 
+            - worker_api_port=8932 
+            - plots_dir=/plots1:/plots2 
+            - blockchains=flora 
+        ports: 
+            - 8932:8932 
+            - 18644:18644 
+            - 18647:18647 
+ 
+    machinaris-hddcoin: 
+        image: ghcr.io/guydavis/machinaris-hddcoin:latest 
+        container_name: machinaris-hddcoin 
+        hostname: Main-Farm 
+        restart: always 
+        volumes: 
+            - ~/.machinaris-hddcoin:/root/.chia 
+            - "/media/sgroiwes/71:/plots1" 
+            - "/media/sgroiwes/81:/plots2" 
+        environment: 
+            - TZ=America/Edmonton 
+            - mode=fullnode 
+            - controller_host=192.168.1.167 
+            - worker_address=192.168.1.167 
+            - worker_api_port=8930 
+            - plots_dir=/plots1:/plots2 
+            - blockchains=hddcoin 
+        ports: 
+            - 8930:8930 
+            - 28444:28444 
+            - 28447:28447 
+ 
+    machinaris-nchain: 
+        image: ghcr.io/guydavis/machinaris-nchain:latest 
+        container_name: machinaris-nchain 
+        hostname: Main-Farm 
+        restart: always 
+        volumes: 
+            - ~/.machinaris-nchain:/root/.chia 
+            - "/media/sgroiwes/71:/plots1" 
+            - "/media/sgroiwes/81:/plots2" 
+        environment: 
+            - TZ=America/Edmonton 
+            - mode=fullnode 
+            - controller_host=192.168.1.167 
+            - worker_address=192.168.1.167 
+            - worker_api_port=8929 
+            - plots_dir=/plots1:/plots2 
+            - blockchains=nchain 
+        ports: 
+            - 8929:8929 
+            - 58445:58445 
+            - 38447:38447 
+ 
+

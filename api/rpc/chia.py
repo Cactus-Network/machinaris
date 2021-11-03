@@ -31,6 +31,12 @@ elif importlib.util.find_spec("flora"):
     from flora.util.default_root import DEFAULT_ROOT_PATH
     from flora.util.ints import uint16
     from flora.util.config import load_config as load_fork_config
+elif importlib.util.find_spec("cactus"):
+    from cactus.rpc.full_node_rpc_client import FullNodeRpcClient
+    from cactus.rpc.farmer_rpc_client import FarmerRpcClient
+    from cactus.util.default_root import DEFAULT_ROOT_PATH
+    from cactus.util.ints import uint16
+    from cactus.util.config import load_config as load_fork_config
 elif importlib.util.find_spec("hddcoin"):
     from hddcoin.rpc.full_node_rpc_client import FullNodeRpcClient
     from hddcoin.rpc.farmer_rpc_client import FarmerRpcClient

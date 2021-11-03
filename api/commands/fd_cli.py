@@ -24,6 +24,8 @@ def get_rpc_port(blockchain):
     if blockchain == 'nchain':
         return 38559
     if blockchain == 'silicoin':
+        return 11000
+    if blockchain == 'cactus':
         return 11559
     raise Exception(f"Unknown rpc_port for blockchain: {blockchain}")
 
