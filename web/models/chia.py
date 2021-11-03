@@ -21,7 +21,7 @@ CURRENCY_SYMBOLS = {
     "flora": "XFL",
     "hddcoin": "HDD",
     "nchain": "NCH",
-    "silicoin": "SIT",
+    "cactus": "CAC",
 }
 
 PLOT_TABLE_COLUMNS = ['worker', 'fork', 'plot_id',  'dir', 'plot', 'type', 'create_date', 'size', '.' ]
@@ -31,7 +31,7 @@ class FarmSummary:
     def __init__(self, farm_recs, wallet_recs):
         self.farms = {}
         chives_farm_recs = []
-        for farm_rec in farm_recs: 
+        for farm_rec in farm_recs:
             if 'chives' == farm_rec.blockchain:  # Chives sends from both harvesters and fullnodes
                 chives_farm_recs.append(farm_rec) # Must later combine them together for single summary
             elif farm_rec.mode == "fullnode":
@@ -47,19 +47,15 @@ class FarmSummary:
                     connection_status = None
                 try:
                     wallet_balance = self.sum_wallet_balance(wallet_recs, farm_rec.hostname, farm_rec.blockchain)
-                except: 
+                except:
                     wallet_balance = '?'
-                if farm_rec.total_coins:
-                    total_coins = self.round_balance(farm_rec.total_coins)
-                else:
-                    total_coins = self.round_balance(0)
                 farm = {
                     "plot_count": int(farm_rec.plot_count),
                     "plots_size": farm_rec.plots_size,
                     "plots_display_size": converters.gib_to_fmt(farm_rec.plots_size),
                     "status": farm_rec.status,
                     "display_status": self.status_if_responding(displayname, farm_rec.blockchain, connection_status, farm_rec.status),
-                    "total_coins": total_coins,
+                    "total_coins": '0.0' if not farm_rec.total_coins else round(farm_rec.total_coins, 6),
                     "wallet_balance": wallet_balance,
                     "currency_symbol": CURRENCY_SYMBOLS[farm_rec.blockchain],
                     "netspace_display_size": '?' if not farm_rec.netspace_size else converters.gib_to_fmt(farm_rec.netspace_size),
@@ -69,12 +65,12 @@ class FarmSummary:
                 if not farm_rec.blockchain in self.farms:
                     self.farms[farm_rec.blockchain] = farm
                 else:
-                    app.logger.info("Discarding duplicate fullnode blockchain status from {0} - {1}".format(farm_rec.hostname, farm_rec.blockchain))    
+                    app.logger.info("Discarding duplicate fullnode blockchain status from {0} - {1}".format(farm_rec.hostname, farm_rec.blockchain))
             else:
                 app.logger.info("Stale farm status for {0} - {1}".format(farm_rec.hostname, farm_rec.blockchain))
         # Now combine Chives farm records from fullnodes and harvesters
         self.combine_chives_recs_into_summary(chives_farm_recs, wallet_recs)
-        if len(self.farms) == 0:  # Handle completely missing farm summary info 
+        if len(self.farms) == 0:  # Handle completely missing farm summary info
             self.farms['chia'] = {} # with empty chia farm
 
     def combine_chives_recs_into_summary(self, chives_farm_recs, wallet_recs):
@@ -101,7 +97,7 @@ class FarmSummary:
                     connection_status = None
                 try:
                     wallet_balance = self.sum_wallet_balance(wallet_recs, farm_rec.hostname, 'chives')
-                except Exception as ex: 
+                except Exception as ex:
                     app.logger.info("Failed to sum Chives wallet balances.".format(str(ex)))
         if fullnode:
             if len(chives_farm_recs) > 0:
@@ -140,26 +136,17 @@ class FarmSummary:
             return "Active" if last_status == "Farming" else last_status
         app.logger.info("Oops! {0} ({1}) had connection_success: {2}".format(displayname, blockchain, connection_status))
         return "Offline"
-    
-    def round_balance(self, value):
-        if value > 100:
-            value = '{:.6g}'.format(value)
-        else:
-            value = '{:.6f}'.format(value)
-        if value.endswith(".000000"):
-            return value[:-5]
-        return value
 
     def sum_wallet_balance(self, wallet_recs, hostname, blockchain):
         numeric_const_pattern = '-Total\sBalance:\s+((?: (?: \d* \. \d+ ) | (?: \d+ \.? ) )(?: [Ee] [+-]? \d+ )?)'
         rx = re.compile(numeric_const_pattern, re.VERBOSE)
         found_balance = False
-        sum = 0
+        sum = 0.0
         for wallet_rec in wallet_recs:
             if wallet_rec.hostname == hostname and wallet_rec.blockchain == blockchain:
                 try:
                     for balance in rx.findall(wallet_rec.details):
-                        #app.logger.info("Found balance of {0} for for {1} - {2}".format(balance, 
+                        #app.logger.info("Found balance of {0} for for {1} - {2}".format(balance,
                         # wallet_rec.hostname, wallet_rec.blockchain))
                         sum += locale.atof(balance)
                         found_balance = True
@@ -167,7 +154,7 @@ class FarmSummary:
                     app.logger.info("Failed to find current wallet balance number for {0} - {1}: {2}".format(
                         wallet_rec.hostname, wallet_rec.blockchain, str(ex)))
         if found_balance:
-            return self.round_balance(sum)
+            return round(sum, 6)
         return '?'
 
 class FarmPlots:
@@ -177,16 +164,16 @@ class FarmPlots:
         self.rows = []
         for plot in plots:
             self.rows.append([
-                plot.displayname,  
-                plot.blockchain, 
-                plot.plot_id, 
-                plot.dir,  
+                plot.displayname,
+                plot.blockchain,
+                plot.plot_id,
+                plot.dir,
                 app.jinja_env.filters['plotnameshortener'](plot.file),
-                plot.type if plot.type else "", 
-                plot.created_at, 
+                plot.type if plot.type else "",
+                plot.created_at,
                 app.jinja_env.filters['bytesfilter'](plot.size),
                 plot.file]
-            ) 
+            )
 
 
 class ChallengesChartData:
@@ -206,7 +193,7 @@ class ChallengesChartData:
         # Now build a sparse array with null otherwise
         self.data = {}
         for key in datasets.keys():
-            self.data[key] = [] 
+            self.data[key] = []
         for label in self.labels:
             for key in datasets.keys():
                 if label in datasets[key]:
@@ -226,12 +213,12 @@ class Wallets:
             except:
                 app.logger.info("Unable to find a worker with hostname '{0}'".format(wallet.hostname))
                 displayname = wallet.hostname
-            self.rows.append({ 
-                'displayname': displayname, 
+            self.rows.append({
+                'displayname': displayname,
                 'hostname': wallet.hostname,
-                'blockchain': wallet.blockchain, 
-                'details': wallet.details, 
-                'updated_at': wallet.updated_at }) 
+                'blockchain': wallet.blockchain,
+                'details': wallet.details,
+                'updated_at': wallet.updated_at })
 
 class Keys:
 
@@ -245,12 +232,12 @@ class Keys:
             except:
                 app.logger.info("Unable to find a worker with hostname '{0}'".format(key.hostname))
                 displayname = key.hostname
-            self.rows.append({ 
-                'displayname': displayname, 
+            self.rows.append({
+                'displayname': displayname,
                 'hostname': key.hostname,
                 'blockchain': key.blockchain,
                 'details': key.details,
-                'updated_at': key.updated_at }) 
+                'updated_at': key.updated_at })
 
 class Blockchains:
 
@@ -264,13 +251,13 @@ class Blockchains:
             except:
                 app.logger.info("Unable to find a worker with hostname '{0}'".format(blockchain.hostname))
                 displayname = blockchain.hostname
-            self.rows.append({ 
-                'displayname': displayname, 
+            self.rows.append({
+                'displayname': displayname,
                 'hostname': blockchain.hostname,
-                'blockchain': blockchain.blockchain, 
+                'blockchain': blockchain.blockchain,
                 'details': blockchain.details,
-                'updated_at': blockchain.updated_at }) 
-            
+                'updated_at': blockchain.updated_at })
+
 class PartialsChartData:
 
     def __init__(self, partials):
@@ -292,7 +279,7 @@ class PartialsChartData:
             #app.logger.info("{0}: partial_hour_at={1} -> slot {2}".format(created_at, partial_hour_at, label_index_by_hour[partial_hour_at]))
             dataset[label_index_by_hour[partial_hour_at]] += 1
 
-    
+
 class Connections:
 
     def __init__(self, connections):
@@ -306,7 +293,7 @@ class Connections:
                 app.logger.info("Unable to find a worker with hostname '{0}'".format(connection.hostname))
                 displayname = connection.hostname
             self.rows.append({
-                'displayname': displayname, 
+                'displayname': displayname,
                 'hostname': connection.hostname,
                 'blockchain': connection.blockchain,
                 'farmer_port': self.blockchain_port(connection.blockchain),
@@ -315,7 +302,7 @@ class Connections:
             })
             self.blockchains[connection.blockchain] = self.parse(connection, connection.blockchain)
         self.rows.sort(key=lambda conn: conn['blockchain'])
-    
+
     def get_add_connection_example(self, blockchain):
         if blockchain == 'chia':
             return "node.chia.net:8444"
@@ -329,25 +316,24 @@ class Connections:
             return "145.1.235.18:28444"
         if blockchain == 'nchain':
             return "218.88.205.216:58445"
-        if blockchain == 'silicoin':
-            return "218.80.75.23:11444"
-        
+        if blockchain == 'cactus':
+            return "175.33.88.63:11444"
+
     def blockchain_port(self,blockchain):
         if blockchain == 'chia':
             return 8444
-        elif blockchain == 'chives':
-            return 9699
         elif blockchain == 'flax':
             return 6888
         elif blockchain == 'flora':
             return 18644
-        elif blockchain == 'hddcoin':
-            return 28444
         elif blockchain == 'nchain':
             return 58445
-        elif blockchain == 'silicoin':
-            return 11444
-
+        elif blockchain == 'cactus':
+                return 11444
+        elif blockchain == 'hddcoin':
+            return 28444
+        elif blockchain == 'chives':
+            return 9699
         raise("Unknown blockchain fork of selected: " + blockchain)
 
     def parse(self, connection, blockchain):
@@ -380,7 +366,7 @@ class Connections:
                             'ports': vals[2],
                             'nodeid': vals[3].replace('...',''),
                             'last_connect': datetime.datetime.strptime( \
-                                str(datetime.datetime.today().year) + ' ' + vals[4] + ' ' + vals[5] + ' ' + vals[6], 
+                                str(datetime.datetime.today().year) + ' ' + vals[4] + ' ' + vals[5] + ' ' + vals[6],
                                 '%Y %b %d %H:%M:%S'),
                             'mib_up': float(vals[7].split('|')[0]),
                             'mib_down': float(vals[7].split('|')[1])
@@ -388,7 +374,7 @@ class Connections:
                         if len(vals) > 9: # HDDCoin keeps SBHeight and Hash on same line
                             connection['height'] = vals[8]
                             connection['hash'] = vals[9]
-                        if blockchain == 'hddcoin' or vals[0] != "FULL_NODE":  # FARMER and WALLET only on one line 
+                        if blockchain == 'hddcoin' or vals[0] != "FULL_NODE":  # FARMER and WALLET only on one line
                             conns.append(connection)
                     else:
                         app.logger.info("Bad connection line: {0}".format(line))
@@ -408,13 +394,13 @@ class Plotnfts:
             except:
                 app.logger.info("Unable to find a worker with hostname '{0}'".format(plotnft.hostname))
                 displayname = plotnft.hostname
-            self.rows.append({ 
-                'displayname': displayname, 
+            self.rows.append({
+                'displayname': displayname,
                 'hostname': plotnft.hostname,
-                'blockchain': plotnft.blockchain, 
-                'details': plotnft.details, 
+                'blockchain': plotnft.blockchain,
+                'details': plotnft.details,
                 'updated_at': plotnft.updated_at })
-    
+
     def get_current_pool_url(self):
         pool_url = None
         for row in self.rows:
@@ -451,18 +437,18 @@ class Pools:
                     points_successful_last_24h = "0"
                 else:
                     points_successful_last_24h = "%.2f"% ( (points_found_24h - pool_errors_24h) / points_found_24h * 100)
-            self.rows.append({ 
-                'displayname': displayname, 
+            self.rows.append({
+                'displayname': displayname,
                 'hostname': pool.hostname,
-                'launcher_id': pool.launcher_id, 
-                'login_link': pool.login_link, 
-                'blockchain': pool.blockchain, 
+                'launcher_id': pool.launcher_id,
+                'login_link': pool.login_link,
+                'blockchain': pool.blockchain,
                 'pool_state': pool_state,
                 'updated_at': pool.updated_at,
                 'status': status,
                 'points_successful_last_24h': points_successful_last_24h
             })
-    
+
     def find_plotnft(self, plotnfts, launcher_id):
         for plotnft in plotnfts:
             if launcher_id in plotnft.details:

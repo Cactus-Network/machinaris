@@ -54,7 +54,7 @@
                     </div>
                     <div class="col-sm">
                         <label for="volume_container_path0" class="form-label">Container Path</label>
-                        <input type="text" class="form-control" placeholder="/plots" onkeyup="updateDocker()" 
+                        <input type="text" class="form-control" placeholder="/plots" onkeyup="updateDocker()"
                             name="volume_container_path" id="volume_container_path0" aria-label="volume_container_path0">
                     </div>
                     <div class="col-auto">
@@ -156,10 +156,10 @@
             if (blockchain == 'nchain') {
                 return 8929;
             }
-            if (blockchain == 'silicoin') {
-                return 8933;
+            if (blockchain == 'cactus') {
+                return 8940;
             }
-            // Next available is 8933
+            // Next available is 8941
             alert("Unknown blockchain fork of selected: " + blockchain);
         }
 
@@ -167,23 +167,23 @@
             if (blockchain == 'chia') {
                 return 8447;
             }
-            if (blockchain == 'chives') {
-                return 9647;
-            }
             if (blockchain == 'flax') {
                 return 6885;
             }
             if (blockchain == 'flora') {
                 return 18647;
             }
-            if (blockchain == 'hddcoin') {
-                return 28447;
-            }
             if (blockchain == 'nchain') {
                 return 38447;
             }
-            if (blockchain == 'silicoin') {
+            if (blockchain == 'cactus') {
                 return 11447;
+            }
+            if (blockchain == 'hddcoin') {
+                return 28447;
+            }
+            if (blockchain == 'chives') {
+                return 9647;
             }
             alert("Unknown blockchain fork of selected: " + blockchain);
         }
@@ -201,7 +201,7 @@
                     var blockchain = blockchains[i].value
                     if (blockchain == "chia") {
                         cmd += "    machinaris:" + line_end;
-                        cmd += "        image: ghcr.io/guydavis/machinaris:latest" + line_end;
+                        cmd += "        image: ghcr.io/guydavis/machinaris" + line_end;
                         cmd += "        container_name: machinaris" + line_end;
                     } else {
                         cmd += "    machinaris-" + blockchain + ":" + line_end;
@@ -232,7 +232,7 @@
                         if (i == 0) { // Record error on first pass
                             if (volume_host_path.endsWith(':')) {
                                 errors.push("Invalid host path ending with colon. Try adding a slash to the end like this " + volume_host_path + '/');
-                            } 
+                            }
                             if (!volume_host_path) {
                                 errors.push("Empty host path provided for volume at '" + volume_container_path + "'. Please provide a host path.");
                             } else if (!volume_container_path) {
@@ -307,7 +307,7 @@
         }
         $(document).ready(function () {
             $('#plotting_keys_row').hide()
-            //$('#farmer_address_row').hide() 
+            //$('#farmer_address_row').hide()
             $('#farmer_address').val(location.hostname)
             $('#controller_host').val(location.hostname)
             updateDocker();
@@ -319,7 +319,7 @@
     <form>
         <div class="rounded-2">
             <h2>Machinaris Worker - Launch Config</h2>
-            <p>Complete the form below to run new harvesters/plotters on other computers across your network.  
+            <p>Complete the form below to run new harvesters/plotters on other computers across your network.
             Save the generated docker-compose.yml file to a folder named 'machinaris', then execute "docker-compose up" from a shell.</p>
             <div class="alert alert-warning" role="alert" id='errors'></div>
             <div class="row mb-3">
@@ -453,13 +453,6 @@
                         </div>
                         <div class="col">
                             <input class="form-check-input" type="checkbox" checked name="blockchains"
-                                id="blockchain-chives" onclick="updateDocker()" value="chives">
-                            <label class="form-check-label" for="blockchain-chives">
-                                Chives
-                            </label>
-                        </div>
-                        <div class="col">
-                            <input class="form-check-input" type="checkbox" checked name="blockchains"
                                 id="blockchain-flax" onclick="updateDocker()" value="flax">
                             <label class="form-check-label" for="blockchain-flax">
                                 Flax
@@ -474,13 +467,6 @@
                         </div>
                         <div class="col">
                             <input class="form-check-input" type="checkbox" checked name="blockchains"
-                                id="blockchain-hddcoin" onclick="updateDocker()" value="hddcoin">
-                            <label class="form-check-label" for="blockchain-hddcoin">
-                                HDDCoin
-                            </label>
-                        </div>
-                        <div class="col">
-                            <input class="form-check-input" type="checkbox" checked name="blockchains"
                                 id="blockchain-nchain" onclick="updateDocker()" value="nchain">
                             <label class="form-check-label" for="blockchain-nchain">
                                 N-Chain
@@ -488,9 +474,23 @@
                         </div>
                         <div class="col">
                             <input class="form-check-input" type="checkbox" checked name="blockchains"
-                                id="blockchain-silicoin" onclick="updateDocker()" value="silicoin">
-                            <label class="form-check-label" for="blockchain-silicoin">
-                                Silicoin
+                                id="blockchain-cactus" onclick="updateDocker()" value="cactus">
+                            <label class="form-check-label" for="blockchain-cactus">
+                                Cactus
+                            </label>
+                        </div>
+                        <div class="col">
+                            <input class="form-check-input" type="checkbox" checked name="blockchains"
+                                id="blockchain-chives" onclick="updateDocker()" value="chives">
+                            <label class="form-check-label" for="blockchain-chives">
+                                Chives
+                            </label>
+                        </div>
+                        <div class="col">
+                            <input class="form-check-input" type="checkbox" checked name="blockchains"
+                                id="blockchain-hddcoin" onclick="updateDocker()" value="hddcoin">
+                            <label class="form-check-label" for="blockchain-hddcoin">
+                                HDDCoin
                             </label>
                         </div>
                     </div>

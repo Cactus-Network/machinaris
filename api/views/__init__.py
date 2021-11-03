@@ -15,12 +15,10 @@ from . import plotnfts
 from . import plots
 from . import plottings
 from . import pools
-from . import rewards
 from . import wallets
 from . import workers
 
-from .stats import plottingdiskused,plottingdiskfree,plotsdiskused, \
-    plotsdiskfree,plotcount,plotssize,totalchia,netspacesize,timetowin
+from .stats import plottingdiskused,plottingdiskfree,plotsdiskused,plotsdiskfree
 
 MODULES = (
     actions,
@@ -40,19 +38,13 @@ MODULES = (
     plots,
     plottings,
     pools,
-    rewards,
     wallets,
     workers,
 
     plottingdiskused,
     plottingdiskfree,
     plotsdiskused,
-    plotsdiskfree,
-    plotcount,
-    plotssize,
-    totalchia,
-    netspacesize,
-    timetowin,
+    plotsdiskfree
 )
 
 

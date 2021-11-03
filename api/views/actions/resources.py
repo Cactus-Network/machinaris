@@ -38,7 +38,7 @@ class Actions(MethodView):
             else:
                 abort("Unknown service provided: {0}".format(service))
             # Now trigger updates after a delay
-            time.sleep(17)
+            time.sleep(12)
             status_worker.update()
             if service in ["plotting", "archiving"]:
                 status_plotting.update()

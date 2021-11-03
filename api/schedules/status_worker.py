@@ -51,9 +51,9 @@ def gather_services_status():
     archiving_status = "disabled"
     if gc['archiving_enabled']:
         if plotman_cli.get_archiver_pid():
-            archiving_status = "running"
+            archiver_status = "running"
         else:
-            archiving_status = "stopped"
+            archiver_status = "stopped"
     response = {
         'plotting_status': plotting_status,
         'archiving_status': archiving_status,
@@ -63,11 +63,9 @@ def gather_services_status():
     # Assumes a single blockchain is enabled in this container
     for blockchain in globals.enabled_blockchains():
         if gc['farming_enabled'] or gc['harvesting_enabled']:
-            farming_status = chia_cli.load_farm_summary(blockchain).status
+            response['farming_status'] = chia_cli.load_farm_summary(blockchain).status
             if chiadog_cli.get_chiadog_pid(blockchain):
-                monitoring_status = "running"
+                response['monitoring_status'] = "running"
             else:
-                monitoring_status = "stopped"
-    response['monitoring_status'] = monitoring_status
-    response['farming_status'] = farming_status
+                response['monitoring_status'] = "stopped"
     return json.dumps(response)

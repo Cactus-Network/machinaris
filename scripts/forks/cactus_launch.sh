@@ -9,9 +9,9 @@ cd /ext9-blockchain
 . ./activate
 
 mkdir -p /root/.chia/ext9/log
-chia init >> /root/.chia/ext9/log/init.log 2>&1 
+chia init >> /root/.chia/ext9/log/init.log 2>&1
 
-echo 'Configuring NChain...'
+echo 'Configuring Cactus...'
 while [ ! -f /root/.chia/ext9/config/config.yaml ]; do
   echo "Waiting for creation of /root/.chia/ext9/config/config.yaml..."
   sleep 1
@@ -37,7 +37,7 @@ done
 sed -i 's/localhost/127.0.0.1/g' ~/.chia/ext9/config/config.yaml
 
 chmod 755 -R /root/.chia/ext9/config/ssl/ &> /dev/null
-chia init --fix-ssl-permissions > /dev/null 
+chia init --fix-ssl-permissions > /dev/null
 
 # Start services based on mode selected. Default is 'fullnode'
 if [[ ${mode} == 'fullnode' ]]; then
@@ -59,18 +59,18 @@ elif [[ ${mode} =~ ^harvester.* ]]; then
   else
     if [ ! -f /root/.chia/farmer_ca/chia_ca.crt ]; then
       mkdir -p /root/.chia/farmer_ca
-      response=$(curl --write-out '%{http_code}' --silent http://${controller_host}:8929/certificates/?type=nchain --output /tmp/certs.zip)
+      response=$(curl --write-out '%{http_code}' --silent http://${controller_host}:8929/certificates/?type=cactus --output /tmp/certs.zip)
       if [ $response == '200' ]; then
         unzip /tmp/certs.zip -d /root/.chia/farmer_ca
       else
-        echo "Certificates response of ${response} from http://${controller_host}:8929/certificates/?type=nchain.  Try clicking 'New Worker' button on 'Workers' page first."
+        echo "Certificates response of ${response} from http://${controller_host}:8929/certificates/?type=cactus.  Try clicking 'New Worker' button on 'Workers' page first."
       fi
-      rm -f /tmp/certs.zip 
+      rm -f /tmp/certs.zip
     fi
     if [ -f /root/.chia/farmer_ca/chia_ca.crt ]; then
       chia init -c /root/.chia/farmer_ca 2>&1 > /root/.chia/ext9/log/init.log
       chmod 755 -R /root/.chia/ext9/config/ssl/ &> /dev/null
-      chia init --fix-ssl-permissions > /dev/null 
+      chia init --fix-ssl-permissions > /dev/null
     else
       echo "Did not find your farmer's certificates within /root/.chia/farmer_ca."
       echo "See: https://github.com/guydavis/machinaris/wiki/Workers#harvester"

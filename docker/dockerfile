@@ -59,7 +59,7 @@ ARG FLAX_BRANCH
 ARG FLORA_BRANCH
 ARG HDDCOIN_BRANCH
 ARG NCHAIN_BRANCH
-ARG SILICOIN_BRANCH
+ARG CACTUS_BRANCH
 
 # copy local files
 COPY . /machinaris/
@@ -75,12 +75,11 @@ RUN \
 	&& /usr/bin/bash /machinaris/scripts/forks/flora_install.sh ${FLORA_BRANCH} \
 	&& /usr/bin/bash /machinaris/scripts/forks/hddcoin_install.sh ${HDDCOIN_BRANCH} \
 	&& /usr/bin/bash /machinaris/scripts/forks/nchain_install.sh ${NCHAIN_BRANCH} \
-	&& /usr/bin/bash /machinaris/scripts/forks/silicoin_install.sh ${SILICOIN_BRANCH} \
+	&& /usr/bin/bash /machinaris/scripts/forks/nchain_install.sh ${CACTUS_BRANCH} \
 	&& /usr/bin/bash /machinaris/scripts/chiadog_install.sh \
 	&& /usr/bin/bash /machinaris/scripts/plotman_install.sh \
 	&& /usr/bin/bash /machinaris/scripts/madmax_install.sh \
 	&& /usr/bin/bash /machinaris/scripts/bladebit_clone.sh \
-	&& /usr/bin/bash /machinaris/scripts/fd-cli_install.sh \
 	&& /usr/bin/bash /machinaris/scripts/machinaris_install.sh \
 	&& rm -rf \
 		/root/.cache \
@@ -89,12 +88,12 @@ RUN \
 		/var/tmp/*
 
 # Provide a colon-separated list of in-container paths to your mnemonic keys
-ENV keys="/root/.chia/mnemonic.txt"  
+ENV keys="/root/.chia/mnemonic.txt"
 # Provide a colon-separated list of in-container paths to your completed plots
 ENV plots_dir="/plots"
 # One of fullnode, farmer, harvester, plotter, farmer+plotter, harvester+plotter. Default is fullnode
-ENV mode="fullnode" 
-# The single blockchain to run: chia, flax, nchain, hddcoin, chives, etc
+ENV mode="fullnode"
+# The single blockchain to run: chia, flax, nchain, hddcoin, chives, cactus etc
 ENV blockchains="chia"
 # If provided then these optional 3 public keys will be set in your plotman.yaml
 ENV farmer_pk="null"
@@ -127,6 +126,10 @@ EXPOSE 8447
 EXPOSE 6888
 # Flax farmer port - DO NOT forward at router
 EXPOSE 6885
+# Cactus protocol port - forward at router
+EXPOSE 11444
+# Cactus farmer port - DO NOT forward at router
+EXPOSE 11447
 # NChain protocol port - forward at router
 EXPOSE 58445
 # NChain farmer port - DO NOT forward at router

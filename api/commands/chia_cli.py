@@ -39,7 +39,7 @@ def load_farm_summary(blockchain):
             abort(500, description="The timeout is expired!")
         if errs:
             app.logger.debug("Error from {0} farm summary because {1}".format(blockchain, outs.decode('utf-8')))
-        return chia.FarmSummary(outs.decode('utf-8').splitlines(), blockchain)
+        return chia.FarmSummary(cli_stdout=outs.decode('utf-8').splitlines())
     elif globals.harvesting_enabled():
         return chia.HarvesterSummary()
     else:
@@ -61,8 +61,7 @@ def load_plots_farming():
     return plots_farming
 
 def load_config(blockchain):
-    mainnet = globals.get_blockchain_mainnet(blockchain)
-    return open(f'{mainnet}/config/config.yaml','r').read()
+    return open('/root/.{0}/mainnet/config/config.yaml'.format(blockchain),'r').read()
 
 def save_config(config, blockchain):
     try:

@@ -25,7 +25,7 @@ SUPPORTED_BLOCKCHAINS = [
     'flora',
     'nchain',
     'hddcoin',
-    'silicoin'
+    'cactus',
 ]
 
 PLOTMAN_CONFIG = '/root/.chia/plotman/plotman.yaml'
@@ -42,7 +42,7 @@ FLAX_BINARY = '/flax-blockchain/venv/bin/flax'
 FLORA_BINARY = '/flora-blockchain/venv/bin/flora'
 NCHAIN_BINARY = '/ext9-blockchain/venv/bin/chia'
 HDDCOIN_BINARY = '/hddcoin-blockchain/venv/bin/hddcoin'
-SILICOIN_BINARY = '/silicoin-blockchain/venv/bin/chia'
+CACTUS_BINARY = '/hddcoin-blockchain/venv/bin/cactus'
 
 RELOAD_MINIMUM_DAYS = 1  # Don't run binaries for version again until this time expires
 
@@ -55,12 +55,12 @@ def get_blockchain_binary(blockchain):
         return FLAX_BINARY
     if blockchain == "flora":
         return FLORA_BINARY
-    if blockchain == "hddcoin":
-        return HDDCOIN_BINARY
     if blockchain == "nchain":
         return NCHAIN_BINARY
-    if blockchain == "silicoin":
-        return SILICOIN_BINARY
+    if blockchain == "hddcoin":
+        return HDDCOIN_BINARY
+    if blockchain == "cactus":
+        return HDDCOIN_BINARY
     raise Exception("Invalid blockchain: ".format(blockchain))
 
 def get_blockchain_mainnet(blockchain):
@@ -74,10 +74,11 @@ def get_blockchain_mainnet(blockchain):
         return "/root/.flora/mainnet"
     if blockchain == 'hddcoin':
         return "/root/.hddcoin/mainnet"
+    if blockchain == 'cactus':
+        return "/root/.cactus/mainnet"
     if blockchain == 'nchain':
         return "/root/.chia/ext9"
-    if blockchain == 'silicoin':
-        return "/root/.silicoin/mainnet"
+
     raise Exception("No mainnet folder for unknown blockchain: {0}".format(blockchain))
 
 def load():
@@ -202,7 +203,7 @@ def load_blockchain_version(blockchain):
         # Chia version with .dev is actually one # to high
         # See: https://github.com/Chia-Network/chia-blockchain/issues/5655
         last_blockchain_version = outs.decode('utf-8').strip()
-        if "@@@@" in last_blockchain_version:  # SSL warning 
+        if "@@@@" in last_blockchain_version:  # SSL warning
             try:
                 os.system("chia init --fix-ssl-permissions")
             except:

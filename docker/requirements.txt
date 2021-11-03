@@ -10,7 +10,7 @@ marshmallow-toplevel
 gunicorn
 pytz
 wheel
-apscheduler==3.8.0
+apscheduler
 requests
 pexpect
 flask-migrate

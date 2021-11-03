@@ -1,9 +1,9 @@
 # This is useful to differentiate multiple
 # instances monitoring multiple harvesters
-notification_title_prefix: 'Machinaris-NChain'
+notification_title_prefix: 'Machinaris-Cactus'
 log_level: INFO
-coin_name: 'nchain'
-coin_symbol: 'nch'
+coin_name: 'cactus'
+coin_symbol: 'CAC'
 
 # Only one consumer can be enabled at a time, you can
 # delete the section for the consumer which you aren't using
@@ -52,8 +52,8 @@ notifier:
     daily_stats: true
     wallet_events: true
     credentials:
-      sender: 'nchain@example.com'
-      sender_name: 'nchaindog'
+      sender: 'cactus@example.com'
+      sender_name: 'cactusdog'
       recipient: 'you@example.com'
       username_smtp: 'username'
       password_smtp: 'password'
@@ -81,7 +81,7 @@ notifier:
     enable: false
     daily_stats: true
     wallet_events: true
-    topic: flax/nchaindog/alert
+    topic: cactus/cactusdog/alert
     qos: 1
     retain: false
     credentials:
