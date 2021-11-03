@@ -7,8 +7,6 @@ services:
         restart: always
         volumes:
             - ~/.machinaris:/root/.chia
-            - "/media/sgroiwes/71:/plots1"
-            - "/media/sgroiwes/81:/plots2"
         environment:
             - TZ=America/Edmonton
             - mode=fullnode
